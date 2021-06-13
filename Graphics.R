@@ -1,9 +1,12 @@
 # Helpful websites for ggplot graphing: ----
 # http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
 # http://sape.inf.usi.ch/quick-reference/ggplot2/colour
+# https://www.r-bloggers.com/2018/06/customizing-time-and-date-scales-in-ggplot2/
+# http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#Bubble%20Plot
 
 
-# Primary colors used in code:
+
+# colors used in code:
 # skyblue
 # cadetblue4
 # cadetblue2
@@ -16,9 +19,14 @@ library(corrplot)
 library(readr)
 library(cowplot)
 library(viridis)
+library(lubridate)
+library(extrafont)
 
 
 spy <- read_csv("01. Raw Data/SPY.csv")
+spy = spy %>% 
+  mutate(date = ymd(Date)) %>% 
+  mutate_at(vars(Date), funs(year, month, day))
 View(spy)
 
 
@@ -100,7 +108,7 @@ lollipop1 <- ggplot(spy, aes(Date, Volume)) +
                color = "skyblue",
                alpha = 0.3,
                size = 0.1) +
-  scale_x_date(date_breaks = "5 year",
+  scale_x_date(date_breaks = "2 year",
                date_label = "%Y") +
   labs(x = "Date",
        y = "Volume",
@@ -121,4 +129,4 @@ lollipop1 <- ggplot(spy, aes(Date, Volume)) +
         plot.caption = element_text(color = "gray60"))
 
 lollipop1
-#
+
