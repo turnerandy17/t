@@ -121,4 +121,4 @@ lollipop1 <- ggplot(spy, aes(Date, Volume)) +
         plot.caption = element_text(color = "gray60"))
 
 lollipop1
-
+#
