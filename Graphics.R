@@ -21,17 +21,25 @@ library(cowplot)
 library(viridis)
 library(lubridate)
 library(extrafont)
+library(tidyquant)
 
 
 spy <- read_csv("01. Raw Data/SPY.csv")
 spy = spy %>% 
   mutate(date = ymd(Date)) %>% 
   mutate_at(vars(Date), funs(year, month, day))
+spy_returns <- spy %>%
+  tq_transmute(select = 'Adj Close',  
+               mutate_fun = periodReturn,
+               period = "weekly",
+               col_rename = "Returns")
 View(spy)
-
+View(spy_returns)
+spy_full <- left_join(spy, spy_returns, by = "Date")
+View(spy_full)
 
 # Line Graph (for time series data) ----
-line1 <- ggplot(spy, mapping = aes(Date, `Adj Close`)) +
+line1 <- ggplot(spy_full, mapping = aes(Date, `Adj Close`)) +
   geom_area(aes(y = spy$'Adj Close'), 
             color = "springgreen4",
             fill = "palegreen1",
@@ -60,7 +68,7 @@ line1
 
 
 # (Scatterplot w/line) ----
-scatter1 <- ggplot(spy, aes(Date, Volume)) +
+scatter1 <- ggplot(spy_full, aes(Date, Volume)) +
   geom_point(aes(y = Volume), 
              color = "cadetblue4",
              size = 0.8) +
@@ -97,7 +105,7 @@ scatter1
 
 
 # Lollipop Chart ----
-lollipop1 <- ggplot(spy, aes(Date, Volume)) +
+lollipop1 <- ggplot(spy_full, aes(Date, Volume)) +
   geom_point(aes(y = Volume), 
              color = "cadetblue4",
              size = 1) +
